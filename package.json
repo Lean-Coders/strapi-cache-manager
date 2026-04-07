@@ -1,0 +1,90 @@
+{
+  "name": "strapi-plugin-cache-manager",
+  "version": "0.1.0",
+  "description": "Strapi 5 plugin for managing and invalidating HTTP-based caches (Varnish, Redis proxy APIs, CDNs) directly from the admin UI",
+  "keywords": [
+    "strapi",
+    "strapi-plugin",
+    "cache",
+    "cache-manager",
+    "cache-invalidation",
+    "varnish",
+    "redis",
+    "cdn",
+    "purge"
+  ],
+  "homepage": "https://github.com/djordjesavanovic/strapi-plugin-cache-manager#readme",
+  "bugs": {
+    "url": "https://github.com/djordjesavanovic/strapi-plugin-cache-manager/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/djordjesavanovic/strapi-plugin-cache-manager.git"
+  },
+  "license": "MIT",
+  "author": "Djordje Savanovic",
+  "type": "commonjs",
+  "exports": {
+    "./package.json": "./package.json",
+    "./strapi-admin": {
+      "types": "./dist/admin/src/index.d.ts",
+      "source": "./admin/src/index.tsx",
+      "import": "./dist/admin/index.mjs",
+      "require": "./dist/admin/index.js",
+      "default": "./dist/admin/index.js"
+    },
+    "./strapi-server": {
+      "types": "./dist/server/src/index.d.ts",
+      "source": "./server/src/index.ts",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "ARCHITECTURE.md"
+  ],
+  "scripts": {
+    "build": "strapi-plugin build",
+    "dev": "strapi-plugin watch",
+    "watch": "strapi-plugin watch",
+    "watch:link": "strapi-plugin watch:link",
+    "verify": "strapi-plugin verify",
+    "test:ts:front": "run -T tsc -p admin/tsconfig.json",
+    "test:ts:back": "run -T tsc -p server/tsconfig.json"
+  },
+  "dependencies": {
+    "@strapi/design-system": "^2.2.0",
+    "@strapi/icons": "^2.2.0",
+    "react-intl": "^7.1.11"
+  },
+  "devDependencies": {
+    "@strapi/sdk-plugin": "^6.0.1",
+    "@strapi/strapi": "^5.40.0",
+    "@strapi/typescript-utils": "^5.40.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "prettier": "^3.6.2",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.1.19",
+    "typescript": "^5.8.3"
+  },
+  "peerDependencies": {
+    "@strapi/sdk-plugin": "^6.0.1",
+    "@strapi/strapi": "^5.40.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.1.18"
+  },
+  "strapi": {
+    "kind": "plugin",
+    "name": "cache-manager",
+    "displayName": "Cache Manager",
+    "description": "Admin panel extension for managing and invalidating caches across multiple providers"
+  }
+}

@@ -66,40 +66,18 @@ Together they provide thorough cache invalidation: `purge` handles the immediate
 
 - Strapi 5.x
 - Node 22+
-- pnpm
 
-### Step 1 — Add to pnpm workspace (monorepo)
-
-If you're using a pnpm monorepo, add the plugin directory to `pnpm-workspace.yaml`:
-
-```yaml
-# pnpm-workspace.yaml
-packages:
-  - packages/*
-  - path/to/strapi-cms/src/plugins/cache-manager/
-```
-
-Run `pnpm install` after adding it. If you installed via npm instead, skip this step.
-
-### Step 2 — Build the plugin
+### Step 1 — Install
 
 ```bash
-pnpm --filter cache-manager build
-# or, if installed via npm: the dist/ is already included in the package
+npm install strapi-plugin-cache-manager
+# or
+pnpm add strapi-plugin-cache-manager
+# or
+yarn add strapi-plugin-cache-manager
 ```
 
-To ensure the plugin is always built before the CMS starts, add it to your CMS `predev`/`prebuild` scripts:
-
-```json
-{
-  "scripts": {
-    "predev": "pnpm --filter cache-manager build",
-    "prebuild": "pnpm --filter cache-manager build"
-  }
-}
-```
-
-### Step 3 — Configure the plugin
+### Step 2 — Configure the plugin
 
 In `config/plugins.ts`:
 
@@ -107,7 +85,6 @@ In `config/plugins.ts`:
 export default ({ env }) => ({
   'cache-manager': {
     enabled: true,
-    resolve: './src/plugins/cache-manager',
     config: {
       providers: [
         {
@@ -159,7 +136,7 @@ export default ({ env }) => ({
 });
 ```
 
-### Step 4 — Set environment variables
+### Step 3 — Set environment variables
 
 ```bash
 # .env
@@ -169,7 +146,7 @@ VARNISH_PURGE_TOKEN=your-secret-token  # must match the token Varnish is configu
 
 In production (Docker), use `VARNISH_URL=http://varnish` (the container name).
 
-### Step 5 — Start Strapi
+### Step 4 — Start Strapi
 
 ```bash
 pnpm develop

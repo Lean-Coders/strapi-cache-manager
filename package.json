@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-cache-manager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Strapi 5 plugin for managing and invalidating HTTP-based caches (Varnish, Redis proxy APIs, CDNs) directly from the admin UI",
   "keywords": [
     "strapi",
@@ -55,11 +55,7 @@
     "test:ts:front": "run -T tsc -p admin/tsconfig.json",
     "test:ts:back": "run -T tsc -p server/tsconfig.json"
   },
-  "dependencies": {
-    "@strapi/design-system": "^2.2.0",
-    "@strapi/icons": "^2.2.0",
-    "react-intl": "^7.1.11"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@strapi/sdk-plugin": "^6.0.1",
     "@strapi/strapi": "^5.40.0",
@@ -74,10 +70,12 @@
     "typescript": "^5.8.3"
   },
   "peerDependencies": {
-    "@strapi/sdk-plugin": "^6.0.1",
+    "@strapi/design-system": "^2.2.0",
+    "@strapi/icons": "^2.2.0",
     "@strapi/strapi": "^5.40.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
+    "react-intl": "^7.1.11",
     "react-router-dom": "^6.30.3",
     "styled-components": "^6.1.18"
   },

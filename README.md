@@ -323,6 +323,52 @@ Varnish accepts purge and ban via custom HTTP endpoints defined in `default.vcl`
 
 **How it works:** The VCL checks `X-Purge-Token` on every purge/ban request. If it matches, the operation proceeds; otherwise Varnish returns 403. The `purgeAll` endpoint bans everything by sending `X-Ban-URL: .` (regex that matches all URLs).
 
+### Redis (via HTTP proxy endpoint)
+
+Redis has no native HTTP API, so you expose a small endpoint in your frontend app (Next.js, Astro, Express, etc.) that handles Redis operations and call it from the plugin.
+
+**Example frontend endpoint** (`/api/cache`):
+
+```
+GET  /api/cache?action=clear-path&path=/blog/my-post  → deletes the Redis key for that path
+GET  /api/cache?action=stats                           → returns key counts / memory usage
+DELETE /api/cache                                      → flushes all cached keys
+```
+
+**Plugin config:**
+
+```typescript
+{
+  name: 'Redis Cache',
+  type: 'http',
+  endpoints: {
+    purge: {
+      url: '${FRONTEND_URL}/api/cache',
+      method: 'GET',
+      headers: { Authorization: 'Bearer ${CACHE_API_TOKEN}' },
+      params: { action: 'clear-path' },
+      pathParam: 'path',
+      pathLocation: 'query',   // sends path as ?path=/blog/my-post
+    },
+    purgeAll: {
+      url: '${FRONTEND_URL}/api/cache',
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ${CACHE_API_TOKEN}' },
+    },
+    stats: {
+      url: '${FRONTEND_URL}/api/cache',
+      method: 'GET',
+      headers: { Authorization: 'Bearer ${CACHE_API_TOKEN}' },
+      params: { action: 'stats' },
+    },
+  },
+}
+```
+
+**Required env vars:** `FRONTEND_URL`, `CACHE_API_TOKEN`
+
+**How it works:** The plugin calls your frontend's HTTP endpoint for each cache operation. The endpoint translates the request into the appropriate Redis command (`DEL` for a specific key, `FLUSHDB` for purge-all, etc.). The `Authorization` header prevents unauthorized cache clears.
+
 ### CDN (Cloudflare example)
 
 ```typescript
@@ -348,11 +394,11 @@ All providers are called for every operation:
 ```typescript
 providers: [
   { name: 'Varnish', type: 'http', endpoints: { purge: {...}, ban: {...}, purgeAll: {...} } },
-  { name: 'Cloudflare CDN', type: 'http', endpoints: { purgeAll: {...} } },
+  { name: 'Redis Cache', type: 'http', endpoints: { purge: {...}, purgeAll: {...}, stats: {...} } },
 ]
 ```
 
-Purging one article will call Varnish's `purge` + `ban` for each path, then Cloudflare's `purgeAll` (since it has no per-URL purge).
+Purging one post calls Varnish's `purge` + `ban` for each path, and in parallel calls the Redis endpoint's `purge` for each path — both caches are invalidated in a single editor action.
 
 ---
 
